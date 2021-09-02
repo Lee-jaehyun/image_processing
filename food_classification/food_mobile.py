@@ -8,7 +8,10 @@ import matplotlib.pyplot as plt
 
 conv_base = MobileNetV2(weights='imagenet',
                   include_top=False,
-                  input_shape=(150, 150, 3))
+                  input_shape=(250, 250, 3))
+
+# mobilenet architecture
+conv_base.summary()
 
 
 conv_base.trainable = False
@@ -17,7 +20,8 @@ mobile = models.Sequential()
 mobile.add(conv_base)
 mobile.add(layers.Flatten())
 mobile.add(layers.Dense(256, activation='relu'))
-mobile.add(layers.Dense(5, activation='sigmoid'))
+mobile.add(layers.Dense(32, activation='relu'))
+mobile.add(layers.Dense(5, activation='softmax'))
 
 mobile.summary()
 
@@ -40,15 +44,15 @@ train_dir = 'train'
 
 train_generator = train_datagen.flow_from_directory(
     train_dir,
-    target_size=(150, 150),
+    target_size=(250, 250),
     batch_size=20,
     class_mode='categorical'
     )
 print(train_generator)
 
 
-mobile.compile(loss='binary_crossentropy',
-              optimizer=optimizers.Adam(lr=0.002, beta_1=0.9, beta_2=0.999),
+mobile.compile(loss='categorical_crossentropy',
+              optimizer=optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999),
               metrics=['acc'])
 
 history = mobile.fit_generator(
