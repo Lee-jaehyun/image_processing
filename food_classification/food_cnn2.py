@@ -18,7 +18,9 @@ model = models.Sequential()
 model.add(conv_base)
 model.add(layers.Flatten())
 model.add(layers.Dense(256, activation='relu'))
-model.add(layers.Dense(5, activation='sigmoid'))
+model.add(layers.Dropout(0.2))
+model.add(layers.Dense(32, activation='relu'))
+model.add(layers.Dense(5, activation='softmax'))
 
 model.summary()
 
@@ -63,7 +65,7 @@ train_generator = train_datagen.flow_from_directory(
 print(train_generator)
 
 
-model.compile(loss='binary_crossentropy',
+model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.Adam(lr=0.002, beta_1=0.9, beta_2=0.999),
               metrics=['acc'])
 
